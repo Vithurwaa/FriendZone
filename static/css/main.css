@@ -1,0 +1,67 @@
+/* HERO SECTION */
+
+.hero-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 100px;
+    gap: 60px;
+    min-height: 75vh;
+}
+
+.hero-left {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.hero-image {
+    width: 300px;
+}
+
+.hero-right {
+    flex: 1;
+}
+
+.hero-right h1 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.hero-right p {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* WHY SECTION */
+
+.why-section {
+    padding: 80px 60px;
+    text-align: center;
+}
+
+.why-section h2 {
+    font-size: 32px;
+    margin-bottom: 50px;
+}
+
+.features-grid {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.feature-box {
+    background: rgba(255,255,255,0.8);
+    padding: 30px;
+    border-radius: 18px;
+    width: 260px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+    transition: 0.3s ease;
+}
+
+.feature-box:hover {
+    transform: translateY(-8px);
+}

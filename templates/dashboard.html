@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="padding:40px;">
+
+<h2>Discover People in {{ request.user.profile.city }}</h2>
+
+<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:30px;">
+
+{% for profile in profiles %}
+    <div class="card">
+        <h3>{{ profile.user.username }}</h3>
+        <p>{{ profile.bio }}</p>
+
+        {% if profile.user.id in connected_user_ids %}
+            <button class="btn-success">Connected</button>
+
+        {% elif profile.user.id in sent_requests %}
+            <button class="btn-disabled">Request Sent</button>
+
+        {% else %}
+            <a href="{% url 'send_request' profile.user.id %}">
+                <button class="btn-primary">Connect</button>
+            </a>
+        {% endif %}
+    </div>
+{% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}

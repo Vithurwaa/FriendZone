@@ -1,0 +1,14 @@
+@login_required
+def edit_profile(request):
+    profile = request.user.profile
+
+    if request.method == "POST":
+        profile.bio = request.POST.get("bio")
+        profile.age = request.POST.get("age")
+        profile.gender = request.POST.get("gender")
+        profile.city = request.POST.get("city")
+        profile.interests = request.POST.get("interests")
+        profile.save()
+        return redirect("discover")
+
+    return render(request, "edit_profile.html", {"profile": profile})

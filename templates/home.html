@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero-container">
+
+    <div class="hero-left">
+        <img src="https://cdn-icons-png.flaticon.com/512/4140/4140048.png" 
+             alt="Friends Illustration" class="hero-image">
+    </div>
+
+    <div class="hero-right">
+        <h1>Find Friends Near You</h1>
+        <p>
+            Discover people in your city who share your interests.
+            Build real connections with real conversations.
+        </p>
+
+        <a href="{% url 'register' %}">
+            <button class="btn-primary">Get Started</button>
+        </a>
+    </div>
+
+</section>
+
+
+<section class="why-section">
+    <h2>Why FriendZone+?</h2>
+
+    <div class="features-grid">
+
+        <div class="feature-box">
+            <h3>👥 Make New Friends</h3>
+            <p>Connect with people nearby based on your city.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>💬 Start Conversations</h3>
+            <p>Send connection requests and build friendships.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>🔐 Safety First</h3>
+            <p>Secure authentication and protected profiles.</p>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

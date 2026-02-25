@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Create Activity</h2>
+<a href="{% url 'create_activity' %}">Post New Activity</a>
+
+<hr>
+
+<h2>Activity Feed</h2>
+
+{% for activity in activities %}
+<div style="border:1px solid #ccc; padding:15px; margin-bottom:10px;">
+    <h3>{{ activity.title }}</h3>
+    <p>{{ activity.description }}</p>
+    <p><strong>Location:</strong> {{ activity.location }}</p>
+    <p><strong>Date:</strong> {{ activity.date }} {{ activity.time }}</p>
+    <p>Posted by {{ activity.creator.username }}</p>
+
+    <a href="{% url 'join_activity' activity.id %}">
+        <button>Join</button>
+    </a>
+</div>
+{% empty %}
+<p>No activities yet.</p>
+{% endfor %}
+
+<hr>
+
+<h2>Discover People</h2>
+
+{% for profile in users %}
+<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+    <h4>{{ profile.user.username }}</h4>
+    <p>{{ profile.interests }}</p>
+</div>
+{% endfor %}
+
+{% endblock %}
