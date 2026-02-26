@@ -1,58 +1,46 @@
 {% extends "base.html" %}
 {% block content %}
 
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Register | FriendZone+</title>
-    <link rel="stylesheet" href="{% static 'css/login.css' %}">
-</head>
-<body>
+<div class="auth-wrapper">
 
-<div class="glass-card">
-    <h2>Create Account ✨</h2>
-    <p>Join and start connecting nearby</p>
-
-    {% if messages %}
-        {% for message in messages %}
-            <p style="color: #ffdddd;">{{ message }}</p>
-        {% endfor %}
-    {% endif %}
-
-    <form method="POST">
+    <form method="POST" class="auth-box">
         {% csrf_token %}
 
-        <div class="input-group">
-            <label>Username</label>
-            <input type="text" name="username" required>
-        </div>
+        <h2>Create Account</h2>
 
-        <div class="input-group">
-            <label>Email</label>
-            <input type="email" name="email" required>
-        </div>
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="Email" required>
 
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" name="password1" required>
-        </div>
+        <input type="password" id="password" name="password1" placeholder="Password" required>
 
-        <div class="input-group">
-            <label>Confirm Password</label>
-            <input type="password" name="password2" required>
-        </div>
+        <input type="password"
+               id="confirmPassword"
+               name="password2"
+               placeholder="Confirm Password"
+               style="display:none;"
+               required>
 
-        <button type="submit" class="btn">Sign Up</button>
+        <button type="submit" class="btn-primary">Sign Up</button>
+
+        <p class="auth-switch">
+            Already have an account?
+            <a href="{% url 'login' %}">Login</a>
+        </p>
     </form>
-
-    <p class="switch-text">
-        Already have an account?
-        <a href="{% url 'login' %}">Login</a>
-    </p>
 
 </div>
 
-</body>
-</html>
+<script>
+const passwordField = document.getElementById("password");
+const confirmField = document.getElementById("confirmPassword");
+
+passwordField.addEventListener("input", function () {
+    if (passwordField.value.length > 0) {
+        confirmField.style.display = "block";
+    } else {
+        confirmField.style.display = "none";
+    }
+});
+</script>
+
 {% endblock %}

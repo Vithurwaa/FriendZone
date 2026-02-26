@@ -1,38 +1,162 @@
 {% extends "base.html" %}
+{% load custom_filters %}
+
 {% block content %}
 
-<h2>Create Activity</h2>
-<a href="{% url 'create_activity' %}">Post New Activity</a>
+<div class="container">
 
-<hr>
+{% if messages %}
+    {% for message in messages %}
+        <div class="message-box">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- ================= ACTIVITY FEED ================= -->
 
 <h2>Activity Feed</h2>
 
-{% for activity in activities %}
-<div style="border:1px solid #ccc; padding:15px; margin-bottom:10px;">
-    <h3>{{ activity.title }}</h3>
-    <p>{{ activity.description }}</p>
-    <p><strong>Location:</strong> {{ activity.location }}</p>
-    <p><strong>Date:</strong> {{ activity.date }} {{ activity.time }}</p>
-    <p>Posted by {{ activity.creator.username }}</p>
-
-    <a href="{% url 'join_activity' activity.id %}">
-        <button>Join</button>
-    </a>
-</div>
-{% empty %}
-<p>No activities yet.</p>
-{% endfor %}
+<a href="{% url 'create_activity' %}">
+    <button class="btn-primary">Post New Activity</button>
+</a>
 
 <hr>
 
+{% if activities %}
+    {% for activity in activities %}
+    <div class="activity-card">
+
+        {% with current_count=activity_participants|get_item:activity.id %}
+
+            {% if current_count >= activity.max_participants %}
+                <span class="badge badge-full">Full</span>
+            {% elif activity.status == "open" %}
+                <span class="badge badge-open">Open</span>
+            {% else %}
+                <span class="badge badge-closed">Closed</span>
+            {% endif %}
+
+            <h3>{{ activity.title }}</h3>
+            <p>{{ activity.description }}</p>
+            <p><strong>Location:</strong> {{ activity.location }}</p>
+            <p><strong>Date:</strong> {{ activity.date }} {{ activity.time }}</p>
+            <p>Posted by <strong>{{ activity.creator.username }}</strong></p>
+
+            <p>👥 {{ current_count|default:0 }} / {{ activity.max_participants }}</p>
+
+            {% if activity.id in joined_activity_ids %}
+                <button class="btn-success" disabled>✓ Joined</button>
+
+            {% elif current_count >= activity.max_participants %}
+                <button class="btn-disabled" disabled>Full</button>
+
+            {% elif activity.status != "open" %}
+                <button class="btn-disabled" disabled>Closed</button>
+
+            {% else %}
+                <a href="{% url 'join_activity' activity.id %}">
+                    <button class="btn-primary">Join</button>
+                </a>
+            {% endif %}
+
+        {% endwith %}
+    </div>
+    {% endfor %}
+{% else %}
+    <p>No activities available.</p>
+{% endif %}
+
+<hr>
+
+<!-- ================= CONNECTION REQUESTS ================= -->
+
+<h2>Connection Requests</h2>
+
+{% if incoming_requests %}
+    {% for request in incoming_requests %}
+        <div class="profile-card">
+            <p><strong>{{ request.sender.username }}</strong> sent you a request</p>
+
+            <a href="{% url 'accept_request' request.id %}">
+                <button class="btn-success">Accept</button>
+            </a>
+
+            <a href="{% url 'reject_request' request.id %}">
+                <button class="btn-danger">Reject</button>
+            </a>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No pending requests.</p>
+{% endif %}
+
+<hr>
+
+<!-- ================= DISCOVER PEOPLE ================= -->
+
 <h2>Discover People</h2>
 
-{% for profile in users %}
-<div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-    <h4>{{ profile.user.username }}</h4>
-    <p>{{ profile.interests }}</p>
+{% if profiles %}
+<div class="discover-grid">
+
+    {% for profile in profiles %}
+    <div class="profile-card">
+
+        <h4>{{ profile.user.username }}</h4>
+
+        <p><strong>Age:</strong> {{ profile.age|default:"Not specified" }}</p>
+        <p><strong>City:</strong> {{ profile.city|default:"Not specified" }}</p>
+
+        <p><strong>Interests:</strong>
+            {% for interest in profile.interests.all %}
+                {{ interest.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                None
+            {% endfor %}
+        </p>
+
+        <p>{{ profile.bio }}</p>
+
+        <!-- ===== CONNECTION BUTTON LOGIC ===== -->
+
+        {% if profile.user.id in connected_user_ids %}
+    <a href="{% url 'remove_connection' profile.user.id %}">
+        <button class="btn-danger">Remove Connection</button>
+    </a>
+
+        {% elif profile.user.id in sent_request_user_ids %}
+            <a href="{% url 'cancel_request' profile.user.id %}">
+                <button class="btn-danger">Cancel Request</button>
+            </a>
+
+        {% elif profile.user.id in received_request_user_ids %}
+            {% for req in incoming_requests %}
+                {% if req.sender.id == profile.user.id %}
+                    <a href="{% url 'accept_request' req.id %}">
+                        <button class="btn-success">Accept</button>
+                    </a>
+                    <a href="{% url 'reject_request' req.id %}">
+                        <button class="btn-danger">Reject</button>
+                    </a>
+                {% endif %}
+            {% endfor %}
+
+        {% else %}
+            <a href="{% url 'send_request' profile.user.id %}">
+                <button class="btn-primary">Connect</button>
+            </a>
+        {% endif %}
+
+    </div>
+    {% endfor %}
+
 </div>
-{% endfor %}
+{% else %}
+    <p>No profiles available.</p>
+{% endif %}
+
+</div>
 
 {% endblock %}
+

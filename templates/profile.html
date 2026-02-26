@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="profile-card">
+
+        <h2>{{ profile.user.username }}</h2>
+
+        <p><strong>Age:</strong> {{ profile.age }}</p>
+        <p><strong>City:</strong> {{ profile.city }}</p>
+        <p><strong>Gender:</strong> {{ profile.get_gender_display }}</p>
+        <p><strong>Bio:</strong> {{ profile.bio }}</p>
+
+        <p><strong>Interests:</strong>
+            {% for interest in profile.interests.all %}
+                {{ interest.name }}{% if not forloop.last %}, {% endif %}
+            {% empty %}
+                None
+            {% endfor %}
+        </p>
+
+        <div style="margin-top:20px;">
+            <a href="{% url 'edit_profile' %}">
+                <button class="btn-primary">Edit Profile</button>
+            </a>
+
+            <a href="{% url 'create_activity' %}">
+                <button class="btn-secondary">Add Post</button>
+            </a>
+        </div>
+
+    </div>
+
+    <hr>
+
+    <h3>Your Posts</h3>
+
+    {% for post in posts %}
+        <div class="post-card">
+            <p>{{ post.content }}</p>
+            <small>{{ post.created_at }}</small>
+        </div>
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

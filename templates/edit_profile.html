@@ -1,14 +1,85 @@
-@login_required
-def edit_profile(request):
-    profile = request.user.profile
+{% extends "base.html" %}
 
-    if request.method == "POST":
-        profile.bio = request.POST.get("bio")
-        profile.age = request.POST.get("age")
-        profile.gender = request.POST.get("gender")
-        profile.city = request.POST.get("city")
-        profile.interests = request.POST.get("interests")
-        profile.save()
-        return redirect("discover")
+{% block content %}
 
-    return render(request, "edit_profile.html", {"profile": profile})
+<div class="container">
+    <div class="auth-wrapper">
+
+       <form method="POST" class="auth-box">
+    {% csrf_token %}
+
+    <h2>Edit Profile</h2>
+
+    <!-- Bio -->
+    <div class="field">
+        <label>Bio</label>
+        <textarea name="bio" rows="3">{{ profile.bio }}</textarea>
+    </div>
+
+    <!-- Age -->
+    <div class="field">
+        <label>Age</label>
+        <input type="number"
+       name="age"
+       value="{{ profile.age }}"
+       min="13"
+       max="80">
+    </div>
+
+    <!-- Gender -->
+    <div class="field">
+        <label>Gender</label>
+        <select name="gender">
+            <option value="male" {% if profile.gender == "male" %}selected{% endif %}>Male</option>
+            <option value="female" {% if profile.gender == "female" %}selected{% endif %}>Female</option>
+            <option value="na" {% if profile.gender == "na" %}selected{% endif %}>Prefer not to say</option>
+        </select>
+    </div>
+
+    <!-- City -->
+    <div class="field">
+        <label>City (Telangana)</label>
+        <select name="city">
+            <option value="">Select District</option>
+            <option>Hyderabad</option>
+            <option>Warangal</option>
+            <option>Karimnagar</option>
+            <option>Nizamabad</option>
+            <option>Khammam</option>
+            <option>Mahabubnagar</option>
+            <option>Adilabad</option>
+            <option>Medak</option>
+            <option>Sangareddy</option>
+            <option>Rangareddy</option>
+            <option>Jagitial</option>
+            <option>Mancherial</option>
+            <option>Siddipet</option>
+            <option>Wanaparthy</option>
+            <option>Kamareddy</option>
+        </select>
+    </div>
+        <!-- Interests -->
+    <div class="field">
+        <label>Select Interests</label>
+
+        <div class="interest-grid">
+            {% for interest in interests %}
+                <label class="interest-card">
+                    <input type="checkbox"
+                           name="interests"
+                           value="{{ interest.id }}"
+                           {% if interest in profile.interests.all %}checked{% endif %}>
+                    <span>{{ interest.name }}</span>
+                </label>
+            {% empty %}
+                <p style="color:white;">No interests found.</p>
+            {% endfor %}
+        </div>
+    </div>
+
+    <button type="submit" class="btn-primary">Save Profile</button>
+</form>
+    </div>
+</div>
+
+{% endblock %}

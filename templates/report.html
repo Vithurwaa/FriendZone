@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <h2>Report {{ user.username }}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <textarea name="reason" placeholder="Reason for reporting" required></textarea>
+        <button class="btn-primary">Submit Report</button>
+    </form>
+</div>
+
+{% endblock %}
